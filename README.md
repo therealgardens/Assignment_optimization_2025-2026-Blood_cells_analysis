@@ -7,6 +7,11 @@ The  **data** folder is for putting all the data (both raw and processed version
 
 **NOTE:** naming convention for everything: *snake_case*
 
+## Handling inner data
+Every interchange of the data (dataset or randomly generated) between different parts of the code should be done only through *Numpy* objects, not Pandas or native objects like lists or dictionaries.
+
+This means that for example developed methods should receive numpy objects as input, and their output as well should be numpy objects.
+
 # Branching
 Each part of the project will have its own branch:
 - feat/gradient_descent
