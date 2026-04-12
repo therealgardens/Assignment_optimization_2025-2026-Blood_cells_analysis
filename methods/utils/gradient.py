@@ -32,7 +32,7 @@ class MultiLogisticRegressionOracle:
 
             result[j_block] = -np.dot(self.predictors.T[j_block,:], self.indicator - softmax_entries)
         else:
-            result = np.dot(self.predictors.T, self.indicator - softmax_entries)
+            result = -np.dot(self.predictors.T, self.indicator - softmax_entries)
 
         return result
 
