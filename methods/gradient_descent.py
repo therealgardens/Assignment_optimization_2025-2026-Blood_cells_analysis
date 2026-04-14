@@ -20,14 +20,21 @@ def compute_gradient(A, X, b, k):
 def gradient_descent(A, b, k, tol = 0.000001, max_iter = 1000):
     m = A.shape[0]
     d = A.shape[1]
-    L = (1/(4*m))*(np.linalg.norm(A, ord = 2)**2) 
+    spectral_norm = np.linalg.norm(A, ord = 2)
+    L = (1/(4*m))*(spectral_norm**2) 
     alpha = 1/L
     #choosing starting point 
     X = np.zeros((d, k))
     for i in range(max_iter):
         grad = compute_gradient(A, X, b, k)
-        if np.linalg.norm(grad) < tol:
-            print(f"Converged in {i} iterations.")
-            break
+        gradient_norm = np.linalg.norm(grad)
+        if gradient_norm < tol:
+            print(f"converged in {i} iterations.")
+            return X
+        #update weights
         X = X - alpha * grad
+        if i % 100 == 0:
+            print(f"iteration {i}: gradient Norm = {gradient_norm:.4f}")
+            
     return X
+
