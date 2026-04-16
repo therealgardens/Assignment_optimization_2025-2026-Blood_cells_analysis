@@ -1,3 +1,5 @@
+from typing import Callable
+from methods.utils.gradient import accuracy
 import numpy as np
 
 def softmax(A, X):
@@ -55,3 +57,34 @@ def gradient_descent(A, b, k, tol = 0.000001, max_iter = 1000, stepsize_method =
             print(f"iteration {i}: gradient Norm = {gradient_norm:.4f}")
             
     return X
+
+
+###attempt with implementation of oracle however doesnt work well when i try it 
+
+
+def gradient_descent(
+    x_init: np.array, 
+    oracle: Callable, 
+    alpha: float, 
+    tol: float = 0.000001, 
+    max_iter: int = 10000
+    ) -> (np.array, int):
+    
+    x_k = x_init
+    for k in range(1, max_iter + 1):
+        gradient = oracle(x_k)
+        gradient_norm = np.linalg.norm(gradient)
+
+        if gradient_norm < tol:
+            print(f"Converged at iteration {k}. Gradient Norm: {gradient_norm}")
+            break
+        x_k_1 = x_k - alpha * gradient
+        
+        if k % 500 == 0:
+            current_loss = oracle.loss(x_k_1)
+            current_acc = accuracy(oracle.predictors, oracle.predictions, x_k_1)
+            print(f"Iteration {k}: Loss = {current_loss}, Accuracy = {current_acc}")
+            
+        x_k = x_k_1
+
+    return (x_k, k)
