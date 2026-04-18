@@ -14,18 +14,12 @@ class MultiLogisticRegressionOracle:
         self.indicator = self.indicator.astype(int) # m x k
     
     def loss(self, x: np.array):
-        # result = 0
-        # for i in range(len(self.predictors)):
-        #     result -= np.dot(x[:,self.predictions[i]], self.predictors[i])
-        #     result += np.log(np.sum(np.exp(np.dot(self.predictors, x))))
-        
-        # return result
         scores = np.dot(self.predictors, x) # m x k 
         exp = np.exp(scores)
         sum_exp = np.sum(exp, axis=1)
         log_sum_exp = np.log(sum_exp)
     
-        class_scores = scores[np.arange(len(self.predictions)), self.predictions]
+        class_scores = scores[range(len(self.predictions)), self.predictions]
         result = -np.sum(class_scores) + np.sum(log_sum_exp)
         return result
 
