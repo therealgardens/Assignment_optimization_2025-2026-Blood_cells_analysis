@@ -1,13 +1,25 @@
+from typing import Callable
+
 import time
 import numpy as np
 
-def gs_bcgd(x_init, oracle, block_step_size, max_iter = 5000, debug_logs = False):
+from methods.utils.accuracy import accuracy
 
-    k = 1
+
+def gs_bcgd(
+    x_init: np.array,
+    oracle: Callable,
+    step_size: list[float],
+    tol: float = 0.000001, 
+    max_iter: int = 10000,
+    debug: bool = False,
+):
     x_k = x_init.copy()
-    start_time = time.time() 
+    iteration_end_times = []
+    iteration_history = []
 
-    while k < max_iter:
+    start_time = time.time() 
+    for k in range(1, max_iter + 1):
         #GS selection rule
         full_grad = oracle() #gets the gradient for the whole X
         block_norms = np.linalg.norm(full_grad, axis=1) #calculates the norm of each block (row)
@@ -17,26 +29,29 @@ def gs_bcgd(x_init, oracle, block_step_size, max_iter = 5000, debug_logs = False
         #Update
         x_k_1 = x_k.copy()
 
-        delta_x_row = -block_step_size[i_star]*full_grad[i_star, :]
+        delta_x_row = -step_size[i_star]*full_grad[i_star, :]
 
         x_k_1[i_star, :] = x_k[i_star, :] + delta_x_row
         
         oracle.update_cache(i_star, delta_x_row)
         
-        if debug_logs == True:
-            if k % 500 == 0:
-                acc = accuracy(oracle.predictors, oracle.predictions, x_k_1)
-                print(f"iteration: {k}, selected_block: {i_star}, sequential distance: {np.linalg.norm(x_k - x_k_1)}, loss: {oracle.loss(x_k_1):.6f}")
-                print(f"accuracy: {acc*100:.2f}%")
+        if debug and k % 500 == 0:
+            acc = accuracy(oracle.predictors, oracle.predictions, x_k_1)
+            print(f"iteration: {k}, selected_block: {i_star}, sequential distance: {np.linalg.norm(x_k - x_k_1)}, loss: {oracle.loss(x_k_1):.6f}")
+            print(f"accuracy: {acc*100:.2f}%")
 
         last_dist = np.linalg.norm(x_k - x_k_1)
         x_k = x_k_1
-        k += 1
 
-    end_time = time.time()
-    elapsed_time = end_time - start_time
-    print(f"Duration: {elapsed_time:.2f} s")
-    print(f"\nFinal iteration: {k}, selected_block: {i_star}, sequential distance: {last_dist}, loss: {oracle.loss(x_k):.4f}")
-    print(f"accuracy: {accuracy(oracle.predictors, oracle.predictions, x_k)*100:.2f}%\n")
+        iteration_history.append(x_k)
+        iteration_end_times.append(time.process_time()-start_time)
+
+        if last_dist < tol:
+            break
     
-    return x_k
+    return {
+        "iterations": k,
+        "x_k": x_k,
+        "history": iteration_history,
+        "times": iteration_end_times,
+    }

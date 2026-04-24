@@ -1,14 +1,14 @@
 import numpy as np
 
-rng = np.random.default_rng(seed=42)
-
 class MultiLogisticRegressionOracle:
-    def __init__(self, predictors: np.array, predictions: list, n_categories: int):
+    def __init__(self, predictors: np.array, predictions: np.array, n_categories: int):
         self.predictors = predictors # Referenced as A
         self.predictions = predictions # Referenced as b
 
         self.n_features = predictors.shape[1] # Referenced as d
         self.n_categories = n_categories # Referenced as k
+
+        self.n_blocks = self.n_features
 
         self.indicator = np.array([predictions == c for c in range(self.n_categories)]).T
         self.indicator = self.indicator.astype(int) # m x k
@@ -22,7 +22,6 @@ class MultiLogisticRegressionOracle:
         class_scores = scores[range(len(self.predictions)), self.predictions]
         result = -np.sum(class_scores) + np.sum(log_sum_exp)
         return result
-
 
     def __call__(self, x: np.array, j_block: int|None = None):
         """Estimate the gradient in regard of specific categories."""
@@ -40,6 +39,19 @@ class MultiLogisticRegressionOracle:
         return result
 
 
-def accuracy(predictors: np.array, ground_truth:np.array, regresssors: np.array) -> float:
-    predictions = np.argmax(np.dot(predictors, regresssors), axis=1)
-    return np.sum(predictions == ground_truth)/len(ground_truth)
+class CachedMultiLogisticRegressionOracle(MultiLogisticRegressionOracle):
+    def __init__(self, predictors, predictions: np.array, n_categories):
+        super().__init__(predictors, predictions, n_categories)
+        self.S = np.zeros((self.predictors.shape[0], self.n_categories)) #Initializing scores AX (m x k)
+
+    def update_cache(self, i_star: int, delta_x_row):
+        self.S += np.outer(self.predictors[:, i_star], delta_x_row)
+    
+    def __call__(self):
+        exp_S = np.exp(self.S)
+        summed_entries = np.sum(exp_S, axis=1, keepdims=True)
+        softmax_entries = exp_S / summed_entries
+
+        result = -np.dot(self.predictors.T, self.indicator - softmax_entries)
+
+        return result
