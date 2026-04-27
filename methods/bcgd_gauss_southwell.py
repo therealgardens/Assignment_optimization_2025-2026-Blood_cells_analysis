@@ -18,7 +18,7 @@ def gs_bcgd(
     iteration_end_times = []
     iteration_history = []
 
-    start_time = time.time() 
+    start_time = time.process_time()
     for k in range(1, max_iter + 1):
         #GS selection rule
         full_grad = oracle() #gets the gradient for the whole X

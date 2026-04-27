@@ -1,8 +1,7 @@
 import matplotlib.pyplot as plt
+
 from methods.utils.accuracy import accuracy
-from methods.gradient_descent import gradient_descent
-from methods.bcgd_gauss_southwell import gs_bcgd
-from methods.bcgd_randomized import randomized_bcgd
+
 def accuracy_vs_CPU(data):
     colors = ["#ad1fb4", "#0e62ff", "#2ca02c"] 
     fig, ax = plt.subplots(figsize=(10, 6))
@@ -46,32 +45,3 @@ def tracking(function, x_init, oracle, **kwargs):
         for x in history]
 
     return times, accs
-
-gd_times, gd_acc = tracking(
-    gradient_descent,
-    np.zeros((number_of_features, number_of_categories)),
-    oracle,
-    step_size=0.001
-)
-bcgd_rand_times, bcgd_rand_acc = tracking(
-    randomized_bcgd,
-    np.zeros((number_of_features, number_of_categories)),
-    oracle,
-    step_size=[0.04] * number_of_features
-)
-bcgd_gs_times, bcgd_gs_acc = tracking(
-    gs_bcgd,
-    np.zeros((number_of_features, number_of_categories)),
-    cached_oracle,
-    step_size=[0.011] * number_of_features
-)
-
-
-data = {
-    "Gradient Descent": (gd_times, gd_acc),
-    "BCGD Randomised Rule": (bcgd_rand_times, bcgd_rand_acc),
-    "BCGD Gauss-Southwell": (bcgd_gs_times, bcgd_gs_acc),
-}
-
-accuracy_vs_CPU(data)
-#function to graph 

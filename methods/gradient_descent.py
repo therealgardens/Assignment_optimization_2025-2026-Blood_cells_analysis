@@ -28,7 +28,7 @@ def gradient_descent(
         if debug and k % 500 == 0:
             current_loss = oracle.loss(x_k_1)
             current_acc = accuracy(oracle.predictors, oracle.predictions, x_k_1)
-            print(f"Iteration {k}: Loss = {current_loss}, Accuracy = {current_acc}")
+            print(f"Iteration {k}: Loss = {current_loss}, sequential distance: {np.linalg.norm(x_k-x_k_1)}, Accuracy = {current_acc}")
             
         x_k = x_k_1
 
