@@ -15,7 +15,7 @@ def randomized_bcgd(
     tol: float = 0.000001, 
     max_iter: int = 10000,
     debug: bool = False,
-) -> np.array:
+) -> dict:
     """Estimate BCGD optimization with Randomized Rule."""
     x_k = x_init
     iteration_end_times = []
