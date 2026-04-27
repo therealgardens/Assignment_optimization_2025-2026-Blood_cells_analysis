@@ -13,7 +13,7 @@ def gs_bcgd(
     tol: float = 0.000001, 
     max_iter: int = 10000,
     debug: bool = False,
-):
+)-> dict:
     x_k = x_init.copy()
     iteration_end_times = []
     iteration_history = []
