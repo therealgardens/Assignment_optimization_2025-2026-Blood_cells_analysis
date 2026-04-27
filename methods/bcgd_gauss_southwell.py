@@ -19,7 +19,7 @@ def gs_bcgd(
     iteration_history = []
 
     start_time = time.process_time()
-    for k in range(1, max_iter + 1):
+    for k in range(max_iter):
         #GS selection rule
         full_grad = oracle() #gets the gradient for the whole X
         block_norms = np.linalg.norm(full_grad, axis=1) #calculates the norm of each block (row)

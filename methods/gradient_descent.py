@@ -19,7 +19,7 @@ def gradient_descent(
     iteration_history = []
 
     start_time = time.process_time()
-    for k in range(1, max_iter + 1):
+    for k in range(max_iter):
         gradient = oracle(x_k)
         gradient_norm = np.linalg.norm(gradient)
 
@@ -35,7 +35,7 @@ def gradient_descent(
         iteration_history.append(x_k)
         iteration_end_times.append(time.process_time()-start_time)
 
-        if gradient_norm < tol:
+        if step_size * gradient_norm < tol:
             break
 
     return {
