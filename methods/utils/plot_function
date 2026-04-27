@@ -74,3 +74,4 @@ data = {
 }
 
 accuracy_vs_CPU(data)
+#function to graph 
