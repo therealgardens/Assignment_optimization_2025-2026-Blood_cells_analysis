@@ -16,7 +16,7 @@ def gradient_descent(
 ) -> dict:
     x_k = x_init
     iteration_end_times = [0.0]
-    iteration_history = []
+    iteration_history = [x_init]
 
     start_time = time.process_time()
     for k in range(max_iter):
@@ -35,7 +35,7 @@ def gradient_descent(
         iteration_history.append(x_k)
         iteration_end_times.append(time.process_time()-start_time)
 
-        if step_size * gradient_norm < tol:
+        if gradient_norm < tol:
             break
 
     return {

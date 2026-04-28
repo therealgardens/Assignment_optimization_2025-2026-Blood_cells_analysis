@@ -16,7 +16,7 @@ def gs_bcgd(
 )-> dict:
     x_k = x_init.copy()
     iteration_end_times = [0.0]
-    iteration_history = []
+    iteration_history = [x_init]
 
     start_time = time.process_time()
     for k in range(max_iter):
@@ -40,13 +40,12 @@ def gs_bcgd(
             print(f"iteration: {k}, selected_block: {i_star}, sequential distance: {np.linalg.norm(x_k - x_k_1)}, loss: {oracle.loss(x_k_1):.6f}")
             print(f"accuracy: {acc*100:.2f}%")
 
-        last_dist = np.linalg.norm(x_k - x_k_1)
         x_k = x_k_1
 
         iteration_history.append(x_k)
         iteration_end_times.append(time.process_time()-start_time)
 
-        if last_dist < tol:
+        if np.linalg.norm(full_grad) < tol:
             break
     
     return {
