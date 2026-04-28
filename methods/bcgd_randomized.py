@@ -19,7 +19,7 @@ def randomized_bcgd(
     """Estimate BCGD optimization with Randomized Rule."""
     x_k = x_init
     iteration_end_times = [0.0]
-    iteration_history = []
+    iteration_history = [x_init]
 
     start_time = time.process_time()
     for k in range(max_iter):
@@ -37,7 +37,7 @@ def randomized_bcgd(
         iteration_history.append(x_k)
         iteration_end_times.append(time.process_time()-start_time)
 
-        if np.linalg.norm(step_size[i_k] * g_i_k) < tol:
+        if np.linalg.norm(g_i_k) < tol:
             break
 
     return {
