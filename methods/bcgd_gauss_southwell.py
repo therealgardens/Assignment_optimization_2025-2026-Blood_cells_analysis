@@ -15,7 +15,7 @@ def gs_bcgd(
     debug: bool = False,
 )-> dict:
     x_k = x_init.copy()
-    iteration_end_times = []
+    iteration_end_times = [0.0]
     iteration_history = []
 
     start_time = time.process_time()

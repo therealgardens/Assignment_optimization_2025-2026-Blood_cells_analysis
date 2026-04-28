@@ -18,7 +18,7 @@ def randomized_bcgd(
 ) -> dict:
     """Estimate BCGD optimization with Randomized Rule."""
     x_k = x_init
-    iteration_end_times = []
+    iteration_end_times = [0.0]
     iteration_history = []
 
     start_time = time.process_time()
