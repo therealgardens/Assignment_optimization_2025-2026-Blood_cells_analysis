@@ -99,7 +99,6 @@ The report contains the mathematical derivations, optimisation algorithms, datas
 
 **[Read the full report (PDF)](./Optimisation_For_Data_Science__Homework_final.pdf)**
 
-*For this link to work, upload the PDF with exactly this filename to the repository root, alongside `README.md`.*
 
 ## Team and academic context
 
